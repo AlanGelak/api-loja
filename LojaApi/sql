@@ -1,0 +1,90 @@
+CREATE DATABASE sistema_pedidos;
+USE sistema_pedidos;
+
+-- TABELA: cidades
+CREATE TABLE cidades (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL
+);
+
+-- TABELA: clientes
+CREATE TABLE clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    altura DOUBLE,
+    nascim_em DATE,
+    cidade_id INT,
+    FOREIGN KEY (cidade_id) REFERENCES cidades(id)
+);
+
+-- TABELA: categorias
+CREATE TABLE categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
+);
+
+-- TABELA: produtos
+CREATE TABLE produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DOUBLE NOT NULL,
+    quantidade DOUBLE NOT NULL,
+    categoria_id INT,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+
+-- TABELA: pedidos
+CREATE TABLE pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    horario DATETIME NOT NULL,
+    endereco VARCHAR(200),
+    cliente_id INT,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+
+-- TABELA: pedidos_produtos (tabela N:N)
+CREATE TABLE pedidos_produtos (
+    pedido_id INT NOT NULL,
+    produto_id INT NOT NULL,
+    preco DOUBLE NOT NULL,
+    quantidade DOUBLE NOT NULL,
+
+    PRIMARY KEY (pedido_id, produto_id),
+
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (produto_id) REFERENCES produtos(id)
+        ON DELETE CASCADE
+);
+--
+INSERT INTO categorias (id, nome) VALUES
+(1, 'Bebidas'),
+(2, 'Lanches'),
+(3, 'Sobremesas'),
+(4, 'Limpeza'),
+(5, 'Hortifruti');
+--
+INSERT INTO produtos (id, nome, preco, quantidade, categoria_id) VALUES
+(1, 'Coca Cola 2L', 12.50, 50, 1),
+(2, 'Guaraná Antártica 2L', 11.90, 40, 1),
+(3, 'Hambúrguer Artesanal', 25.00, 20, 2),
+(4, 'Pizza Calabresa', 45.00, 15, 2),
+(5, 'Sorvete Chocolate 1L', 18.00, 30, 3),
+(6, 'Papel Toalha 2un', 7.50, 60, 4),
+(7, 'Detergente Neutro', 3.99, 100, 4),
+(8, 'Maçã Gala 1kg', 6.00, 80, 5),
+(9, 'Banana Caturra 1kg', 5.50, 90, 5);
+--
+INSERT INTO cidades (id, nome) VALUES
+(1, 'Porto Alegre'),
+(2, 'Canoas'),
+(3, 'Novo Hamburgo'),
+(4, 'São Leopoldo');
+--
+INSERT INTO clientes (id, nome, altura, nascim_em, cidade_id) VALUES
+(1, 'Alan Marques', 1.81, '2001-04-09', 1),
+(2, 'João Pereira', 1.75, '1990-02-15', 2),
+(3, 'Maria Silva', 1.65, '1985-11-22', 1),
+(4, 'Ana Souza', 1.70, '1998-06-05', 3),
+(5, 'Carlos Henrique', 1.82, '1993-09-12', 4);
+
